@@ -1,8 +1,4 @@
-### Summary
-
-This document provides the specification of Dial800’s RoundTrip v2.0 Sales Data Submission service, along with a description & examples illustrating how to properly use this service.
-
-### RoundTrip v2.0 (RT2) Sales Data Submission Service
+## RoundTrip v2.0 (RT2) Sales Data Submission Service
 
 RT2 will provide the ability for authorized external parties (most commonly, call centers) to submit Call Sales & Disposition data to Dial800, to be associated with a specific telephone call.
 
@@ -22,46 +18,39 @@ For Call Centers servicing CallView clients, they will be issued a “restricted
 
 ### Endpoints
 
-The test/staging endpoint where these services will be available at is:
+The test/staging endpoint can be found at:
 
 http://stage-api.roundtrip.dial800.com/roundtrip
 
-The production endpoint where these services will be available at is:
+The production endpoint can be found at:
 
 http://roundtrip.dial800.com/roundtrip
 
 
 ### Timing
 
-RT2 data submissions are performed on a synchronous basis, and will attempt to match the data submitted  to a call in the CallView databases, and will return an HTTP status code as part of the response indicating success or failure of the matching & data posting process.
+RT2 data submissions are performed on a synchronous basis, and attempt to match the data submitted  to a call in the CallView databases. HTTP status codes are returned as part of the response, indicating success or failure of the matching & data posting process.
 
 Consequently, call sales data submitted via the RT2 API must be submitted AFTER the call is completed and the basic call data has been inserted into the CallView databases. In many cases, the call data will be available within CallView 5-10 seconds after the call is terminated. In some cases, there may be a delay as long as 10-15 minutes before the call data becomes available.
 
 Any party attempting to submit RT2 data via this API must implement their submission code to accommodate the possibility that the target call data is not yet available within the system, detecting potential “Call Not Found” return codes, and waiting/delaying/queuing the RT2 API request for retry at a later time.
 
-PLEASE NOTE: Dial800 begins nightly batch processing of data exports at 2am PT, which means all data submissions intended for extraction & reporting to a media agency or other external party must be completed prior to that time.
+PLEASE NOTE: Dial800 begins nightly batch processing of data exports at 2am PT. All data submissions intended for extraction & reporting to media agencies or other external parties must be completed prior to that time.
 
 
 ### Telephone Number Formatting
 
-All Telephone numbers within this API will be formatted according to http://tools.ietf.org/html/rfc3966. However, at this time, Dial800 will only be supporting us-based (NANPA) telephone number formats; International number formats will be supported at a future time.
+All Telephone numbers within this API will be formatted according to http://tools.ietf.org/html/rfc3966. However, at this time, Dial800 will only be supporting US-based (NANPA) telephone number formats; International number formats will be supported at a future time.
 
 
-### RoundTrip v2: Submit Call Sales Data
+### RoundTrip v2: Submitting Call Sales Data
 
-Resource URI
+A request is initiated by an authorized API user, and used to submit call sales data for calls matching the criteria provided in the request.
 
-```html
-/roundtrip
-```
+RT2 data payload is submitted in the POSTDATA of the HTTP call. (See the Appendices of this document for valid payload XML structures representing valid RoundTrip data formats that are available for use.)
 
-HTTPS POST
+Data for a single call should be submitted with a single web request. The response to each request will provide a standard HTTP response code (i.e. “200” indicating “Success”). The response body will include the Call ID of the matched call.
 
-This request is initiated by an authorized API user, and may be used to submit call sales data for calls matching the criteria provided in the request.
-
-The RT2 data payload will be submitted in the POSTDATA of the HTTPS call. (See the Appendices of this document for valid payload XML structures representing valid RoundTrip data formats that are available for use.)
-
-Data for a single call should be submitted with a single web request. The response to each request will provide a standard HTTP response code (i.e. “200” indicating “Success”), with the response body including the Call ID of the call which was matched.
 
 The Call ID of the matched call ought to be saved, if possible, by the call center submitting the data, as it MUST be subsequently provided for making corrections to the RoundTrip data if the original submission is discovered to be in error.
 
@@ -78,18 +67,11 @@ Call Sales Data may be associated with a call in one of two ways:
 Associate call sales data to a specific call by CallID.
 
 ```xml
-/roundtrip
-
-POSTDATA payload…
-
 <Call xmlns="http://www.dial800.com/roundtrip/2011-07-15">
-
     <!—- Core Data -->
-
     <ID>X089341KJH941KJ2H4O985</ID>
 
     <!—- Supplemental Call Data Should Be Inserted Here -->
-
 </Call>
 ```
 
@@ -105,25 +87,16 @@ An HTTP 200 response will indicate success, and will return the matched CallID d
 
 ####Example 2 - Request
 
-Associate call sales data to a call matching the search criteria. (Please Note: Optional “<DNIS>” element omitted!)
+Associate call sales data to a call matching the search criteria. (Please Note: Optional “&lt;DNIS&gt;” element omitted!)
 
 ```xml
-/roundtrip
-
-POSTDATA payload…
-
 <Call xmlns="http://www.dial800.com/roundtrip/2011-07-15">
-
     <!—- Core Data -->
-
     <ANI>tel:3101234567</ANI>
-
     <Target>tel:8881234567</Target>
-
     <CallStart>2010-09-01T09:13:31-07:00</CallStart>
 
     <!—- Supplemental Call Data Should Be Inserted Here -->
-
 </Call>
 ```
 
@@ -134,3 +107,66 @@ POSTDATA payload…
 
 <ID>XDhshURwv60Q2nRyN4cnGVCmMB1cP</ID>
 ````
+
+----
+
+## Appendix “A”: Basic Call Sales Data
+
+### POSTDATA XML payload structure
+
+```xml
+<Call xmlns="http://www.dial800.com/roundtrip/2011-07-15">
+    <!—- Core Data -->
+    <ID>X089341KJH941KJ2H4O985</ID>
+    <DNIS>tel:8005555555</DNIS>
+    <ANI>tel:3105555555</ANI>
+    <Target>tel:3109999999</Target>
+    <CallStart>2011-07-15T01:02:03-08:00</CallStart>
+
+    <!—- Supplemental Form-Based Data Should Be Inserted Here -->
+</call>
+```
+
+Where the XML elements provided in the POSTDATA of the request body are as follows:
+
+Parameter Name
+ 
+
+Description
+
+ID
+	
+
+String value representing the alphanumeric Call ID of the phone call to be matched for the associated Sales data. [OPT]
+
+DNIS
+	
+
+10-Digit string value representing the DNIS (TFN) of the phone call to be matched for the associated Sales data. [OPT]
+
+ANI
+	
+
+10-Digit string value representing the ANI (Caller #) of the phone call to be matched for the associated Sales data. [OPT]
+
+Target
+	
+
+10-Digit string value representing the Target (“RingTo”) number of the phone call to be matched for the associated Sales data. [OPT]
+
+CallStart
+	
+
+The Call Start Time representing when this call was initiated. This value must be expressed using the standard XML DateTime format which includes the timezone offset identifier(i.e. “YYYY-MM-DDThh:mm:ss±HH:MM” or “YYYY-MM-DDThh:mm:ssZ”). [OPT]
+
+	
+
+Supplemental Attributes
+	
+
+Refer to subsequent document appendices and/or addendum documents for partner-specific XML structures & examples of additional data which may be posted.
+
+PLEASE NOTE:
+
+    If the “<ID>” element is used, no other “Core Data” parameters are required, nor should they be passed, or an error will be issued. The “<ID>” element must always be passed on its own.
+    If the “<ID>” element is not passed/used, then the “<ANI>”, “<Target>”, and “<CallStart>” elements will be required to be passed, and the “<DNIS>” element may optionally be passed.
