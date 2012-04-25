@@ -206,11 +206,15 @@ __PLEASE NOTE: Use “Content-Type: application/roundtrip.sales” in HTTP POST 
 </Call>
 ```
 
+Please Note: the supplemental form data is based on Dial800 Native API, which you can find [here](http://docs.dial800.com).
+
 -----
 
 ## Appendix “C” – CallView360 view of RoundTrip Sales Data
 
 Sales data provided through the RoundTrip web service interface and matched to CallView360 calls will render in the CallView360 UI.
+
+<img src="http://c14986898.r98.cf2.rackcdn.com/Reference_RoundTripSample.png">
 
 The “IsSale”, “Amount”, and “Item” attributes from the RT2 data submission will be derived differently depending upon the specific form data format submitted, and will render directly on the CallView UI as shown above. All other data elements will be contained in the CallView databases & provided via data transmission to the client and/or Media Agency, but will NOT render on the CallView UI.
 
