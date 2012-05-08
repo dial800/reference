@@ -108,6 +108,9 @@ Associate call sales data to a call matching the search criteria. (Please Note: 
 <ID>XDhshURwv60Q2nRyN4cnGVCmMB1cP</ID>
 ````
 
+#### OBSERVATIONS ON MATCHING:
+You may match a SEARCH submission ONLY ONCE. After a match is established and recorded, any futher attempts to match the same call will fail: the call has already been recorded as matched. However, you may send an UPDATE (based on Call ID value) to confirm your submissions.
+
 ----
 
 ## Appendix “A”: Basic Call Sales Data
