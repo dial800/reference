@@ -179,7 +179,7 @@ As noted above, the <DNIS> element is optional; in the case where this number is
 
 ##### &lt;CallStart&gt;
 
-Please note that the “<CallStart >” value is crucial to correctly identifying and matching sales data to calls, as RoundTrip enforces a matching tolerance of ±900 seconds (15 minutes) to allow for minor variations in clock time synchronization between Dial800 and consumers of this service. If the consumer-supplied “<CallStart>” value varies from the “CallStartTime” value within CallView by more than this 15 minute tolerance, the sales data will not be matched to the call.
+Please note that the “&lt;CallStart&gt;” value is crucial to correctly identifying and matching sales data to calls, as RoundTrip enforces a matching tolerance of ±900 seconds (15 minutes) to allow for minor variations in clock time synchronization between Dial800 and consumers of this service. If the consumer-supplied “<CallStart>” value varies from the “CallStartTime” value within CallView by more than this 15 minute tolerance, the sales data will not be matched to the call.
 
 Also, this value must be supplied in an XML time format that specifies the timezone offset (either “Z” or “±HH:MM”). It is the responsibility of the consumer of this API to make sure that the timezone offset is expressed correctly, otherwise the start time provided via the web service request is almost certain to vary from the call data by more than 15 minutes, resulting in a “No Match” condition.
 
