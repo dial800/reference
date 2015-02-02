@@ -18,10 +18,6 @@ For Call Centers servicing CallView clients, they will be issued a “restricted
 
 ### Endpoints
 
-The test/staging endpoint can be found at:
-
-http://stage-api.roundtrip.dial800.com/roundtrip
-
 The production endpoint can be found at:
 
 http://roundtrip.dial800.com/roundtrip
